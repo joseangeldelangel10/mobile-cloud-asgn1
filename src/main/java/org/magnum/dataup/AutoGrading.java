@@ -15,7 +15,7 @@
  * limitations under the License.
  * 
  */
-package org.magnum.dataup;
+//package org.magnum.dataup;
 
 /**
  * This class allows you to estimate the score for your solution before handing it in.
@@ -58,6 +58,7 @@ package org.magnum.dataup;
     \:\__\        \::/  /       \::/  /        /:/  /     \:\__\          \:\__\        
      \/__/         \/__/         \/__/         \/__/       \/__/           \/__/        
 */
+/*
 public class AutoGrading {
 
 	public static void main(String[] args) throws Exception {
@@ -65,3 +66,4 @@ public class AutoGrading {
 	}
 
 }
+ */

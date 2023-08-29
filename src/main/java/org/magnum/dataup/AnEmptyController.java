@@ -18,6 +18,11 @@
 package org.magnum.dataup;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 @Controller
 public class AnEmptyController {
@@ -38,5 +43,12 @@ public class AnEmptyController {
                                                                                                                                                                                                                                                                         
 	 * 
 	 */
+	@RequestMapping("/")
+	public ResponseEntity<String> main_page(){
+		HttpHeaders responseHeaders = new HttpHeaders();
+		responseHeaders.set("access-control-allow-origin", "*");
+		responseHeaders.set("access-control-expose-headers", "*");
+		return new ResponseEntity<String>("hello", responseHeaders, HttpStatus.OK);
+	}
 	
 }
