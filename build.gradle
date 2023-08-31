@@ -37,6 +37,10 @@ dependencies {
     runtimeOnly 'junit:junit:4.12'
 }
 
+springBoot {
+    mainClassName = "org.magnum.dataup.Application"    
+}
+
 test {
     useJUnitPlatform()
 }

@@ -15,7 +15,7 @@
  * limitations under the License.
  * 
  */
-//package org.magnum.dataup;
+package org.magnum.dataup;
 
 /**
  *                       DO NOT MODIFY THIS CLASS
@@ -43,7 +43,7 @@
     \:\__\        \::/  /       \::/  /        /:/  /     \:\__\          \:\__\        
      \/__/         \/__/         \/__/         \/__/       \/__/           \/__/        
  */
-/*
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -221,5 +221,3 @@ public class AutoGradingTest {
 	}
 
 }
-*/
-// TODO : uncomment tests and make sure that build works with them
