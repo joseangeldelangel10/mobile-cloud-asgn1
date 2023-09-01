@@ -30,9 +30,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.hibernate.mapping.Map;
 import org.magnum.dataup.model.Video;
+import org.magnum.dataup.model.VideoStatus;
+import org.magnum.dataup.model.VideoStatus.VideoState;
 import org.msgpack.io.Input;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpHeaders;
@@ -106,29 +109,44 @@ public class AnEmptyController {
 		return new ResponseEntity<String>("hello", responseHeaders, HttpStatus.OK);
 	}
 
-	@RequestMapping(value = "/video/{videoId}/data", method = RequestMethod.POST, consumes = "multipart/form-data")
-	public ResponseEntity<String> postVideoData(@PathVariable Long videoId, @RequestParam("video") MultipartFile videoData){						
+	@RequestMapping(value = "/video/{videoId}/data", method = RequestMethod.POST, consumes = "multipart/form-data", produces = "application/json")
+	public VideoStatus postVideoData(
+		@PathVariable Long videoId, 
+		@RequestParam("data") MultipartFile videoData,
+		HttpServletResponse response){						
+				
 		Video videoMetadata = idToVideo.get(videoId);
-		//System.out.println("video data len is:");
-		//System.out.println(String.valueOf(videoData.length)); 
-		HttpStatus responseStatus = HttpStatus.OK;
-		try{
-			//InputStream byteArrayInputStream = videoData.getInputStream();
-			if (!videoData.isEmpty()){
+		if (videoMetadata == null){
+			response.setStatus(404);			
+			return null;
+		}else{
+			try{			
 				videoFileManager.saveVideoData(videoMetadata, videoData.getInputStream());
-			}else{
+				return new VideoStatus(VideoState.READY);
+			} catch( Exception e ){
 				System.out.println("Unable to save video data");
-				responseStatus = HttpStatus.INTERNAL_SERVER_ERROR;	
+				response.setStatus(400);				
+				return null;
 			}
-		} catch( Exception e ){
-			System.out.println("Unable to save video data");
-			responseStatus = HttpStatus.INTERNAL_SERVER_ERROR;
-		}
-		
-		HttpHeaders responseHeaders = new HttpHeaders();
-		responseHeaders.set("access-control-allow-origin", "*");
-		responseHeaders.set("access-control-expose-headers", "*");
-		return new ResponseEntity<String>("video saved", responseHeaders, responseStatus) ;		
+		}		
+	}
+
+	@RequestMapping(value = "/video/{videoId}/data", method = RequestMethod.GET)
+	public void getVideoData(
+		@PathVariable Long videoId,		
+		HttpServletResponse response){						
+				
+		Video videoMetadata = idToVideo.get(videoId);
+		if (videoMetadata == null){
+			response.setStatus(404);						
+		}else{									
+			try{			
+				response.setStatus(200);
+				videoFileManager.copyVideoData(videoMetadata, response.getOutputStream());										
+			} catch( Exception e ){				
+				response.setStatus(404);
+			}
+		}		
 	}
 	
 	@RequestMapping(value = "/video", method = RequestMethod.GET, produces = "application/json")
