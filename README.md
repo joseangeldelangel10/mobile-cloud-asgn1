@@ -51,7 +51,7 @@ GET /video
      server as JSON. The list of videos does not have to be
      persisted across restarts of the server. The list of
      Video objects should be able to be unmarshalled by the
-     client into a Collection<Video>.
+     client into a Collection.
    - The return content-type should be application/json, which
      will be the default if you use @ResponseBody
 
@@ -274,5 +274,50 @@ official grade.
 	}
 ```
 
+## Assignment Solution Usage
 
+Once the spring application is running the way to write curl requests to each endpoint is the following:
 
+### POST /video
+
+```bash
+curl http://localhost:8080/video -i \
+    -X POST \
+    -d @client_request_data.json \
+    -H "Content-Type: application/json" \
+```
+
+> the data found inside **client_request_data.json** is the following:
+
+```json
+{
+	"title": "my video 1",
+	"duration" : 120,
+	"location" : "mex",
+	"subject" : "comedy",
+	"contentType" : "video/mp4"
+}
+```
+### GET /video
+
+```bash
+curl http://localhost:8080/video -i
+```
+
+### POST /video/{id}/data
+
+```bash
+curl http://localhost:8080/video/1/data -i \
+    -X POST \
+    -F "data=@client_video.mp4" \
+    -H "Content-Type: multipart/form-data" \
+```
+> where **client_video.mp4** is a mp4 video file in the local storage of the client
+
+### GET /video/{id}/data
+
+```bash
+curl http://localhost:8080/video/1/data \
+    --output ./response_video.mpg \
+```
+> where **response_video.mpg** is the name of the local file where the video fetched from the server will be saved
