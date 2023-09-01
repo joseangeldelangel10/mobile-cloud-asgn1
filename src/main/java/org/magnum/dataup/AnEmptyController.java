@@ -106,15 +106,20 @@ public class AnEmptyController {
 		return new ResponseEntity<String>("hello", responseHeaders, HttpStatus.OK);
 	}
 
-	@RequestMapping(value = "/video/{videoId}/data", method = RequestMethod.POST, consumes = "video/mpeg")
-	public ResponseEntity<String> postVideoData(@PathVariable Long videoId, @RequestBody InputStream videoData){						
+	@RequestMapping(value = "/video/{videoId}/data", method = RequestMethod.POST, consumes = "multipart/form-data")
+	public ResponseEntity<String> postVideoData(@PathVariable Long videoId, @RequestParam("video") MultipartFile videoData){						
 		Video videoMetadata = idToVideo.get(videoId);
 		//System.out.println("video data len is:");
 		//System.out.println(String.valueOf(videoData.length)); 
 		HttpStatus responseStatus = HttpStatus.OK;
 		try{
-			InputStream byteArrayInputStream = videoData;
-			videoFileManager.saveVideoData(videoMetadata, byteArrayInputStream);
+			//InputStream byteArrayInputStream = videoData.getInputStream();
+			if (!videoData.isEmpty()){
+				videoFileManager.saveVideoData(videoMetadata, videoData.getInputStream());
+			}else{
+				System.out.println("Unable to save video data");
+				responseStatus = HttpStatus.INTERNAL_SERVER_ERROR;	
+			}
 		} catch( Exception e ){
 			System.out.println("Unable to save video data");
 			responseStatus = HttpStatus.INTERNAL_SERVER_ERROR;
